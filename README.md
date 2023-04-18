@@ -1,11 +1,15 @@
 # D8XIntegrations
 
-`yarn`
+> Can we have the have some sample solidity calls for opening/closing trades and reading the size of our positions? 🙏🙏🙏
+Yes you can.
+
 
 ## MockLego
 
 The contract `MockLego.sol` provides an example on how D8X perpetual futures trades can be performed from another smart contract.
-You can get the parameters used in the constructor with the help of `ts-node src/scripts/contractAddresses.ts`
+You can get the parameters used in the constructor with the help of 
+* install packages: `yarn` 
+* run: `ts-node src/scripts/contractAddresses.ts`
 Example output of contractAddresses:
 
 ```
