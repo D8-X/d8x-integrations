@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "baseUrl": "./",
+        "target": "es2018",
+        "module": "commonjs",
+        "allowJs": true,
+        "strict": true,
+        "noImplicitAny": false,
+        "esModuleInterop": true,
+        "outDir": "dist",
+        "resolveJsonModule": true,
+        "sourceMap": true,
+        "declaration": true
+    },
+    "include": ["./scripts", "./test"],
+    "files": []
+}
