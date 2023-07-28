@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.17;
+pragma solidity 0.8.19;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "../perpetual/interfaces/IClientOrder.sol";
+import "./IClientOrder.sol";
 
 interface OrderBookContractInterface {
     function postOrder(IClientOrder.ClientOrder calldata _order, bytes calldata _signature)
@@ -68,7 +68,7 @@ struct D18MarginAccount {
  */
 contract MockLego {
     event PerpOrderSubmitFailed(string reason);
-    event PerpOrderSubmitSuccess(int256 amountDec18, int16 leverageInteger);
+    event PerpOrderSubmitSuccess(int256 amountDec18, uint16 leverageTDR);
     address public immutable orderBookAddr;
     address public immutable perpetualProxy;
     address public immutable mgnTokenAddr;
@@ -104,22 +104,20 @@ contract MockLego {
      * Post an order to the order book. Order will be executed by
      * external "keepers".
      * @param _amountDec18 signed amount to be traded
-     * @param _leverageInteger leverage (integer), e.g. 2 for 2x leverage
+     * @param _leverageTDR leverage two-digit-integer), e.g. 210 for 2.1x leverage
      * @return true if posting order succeeded
      */
-    function postOrder(int256 _amountDec18, int16 _leverageInteger) external returns (bool) {
-        require(_leverageInteger >= 0, "invalid lvg");
+    function postOrder(int256 _amountDec18, uint16 _leverageTDR) external returns (bool) {
         int128 fTradeAmount = _fromDec18(_amountDec18);
-        int128 fLeverage = _fromInt(int256(_leverageInteger));
         IClientOrder.ClientOrder memory order;
         order.flags = 0x40000000;
         order.iPerpetualId = iPerpetualId;
         order.traderAddr = address(this);
         order.fAmount = fTradeAmount;
         order.fLimitPrice = fTradeAmount > 0 ? MAX_64x64 : int128(0);
-        order.fLeverage = fLeverage; // 0 if deposit and trade separate
-        order.iDeadline = uint64(block.timestamp + 86400 * 3);
-        order.createdTimestamp = uint64(block.timestamp);
+        order.leverageTDR = _leverageTDR; // 0 if deposit and trade separate
+        order.iDeadline = uint32(block.timestamp + 86400 * 3);
+        order.executionTimestamp = uint32(block.timestamp);
         // fields not required:
         //      uint16 brokerFeeTbps;
         //      address brokerAddr;
@@ -131,7 +129,7 @@ contract MockLego {
 
         // submit order
         try OrderBookContractInterface(orderBookAddr).postOrder(order, bytes("")) {
-            emit PerpOrderSubmitSuccess(_amountDec18, _leverageInteger);
+            emit PerpOrderSubmitSuccess(_amountDec18, _leverageTDR);
             return true;
         } catch Error(string memory reason) {
             emit PerpOrderSubmitFailed(reason);

@@ -1,38 +1,27 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.17;
+pragma solidity 0.8.19;
 
 /**
  * @title Trader/Broker facing order struct
  * @notice this order struct is sent to the limit order book and converted into an IPerpetualOrder
  */
 interface IClientOrder {
-    //     iPerpetualId          global id for perpetual
-    //     traderAddr            address of trader
-    //     brokerSignature       signature of broker (or 0)
-    //     brokerFeeTbps         broker can set their own fee
-    //     fAmount               amount in base currency to be traded
-    //     fLimitPrice           limit price
-    //     fTriggerPrice         trigger price. Non-zero for stop orders.
-    //     iDeadline             deadline for price (seconds timestamp)
-    //     traderMgnTokenAddr    address of the compatible margin token the user likes to use,
-    //                           0 if same token as liquidity pool's margin token
-    //     flags                 trade flags
     struct ClientOrder {
-        uint32 flags;
-        uint24 iPerpetualId;
-        uint16 brokerFeeTbps;
-        address traderAddr;
-        address brokerAddr;
-        address referrerAddr;
-        bytes brokerSignature;
-        int128 fAmount;
-        int128 fLimitPrice;
-        int128 fTriggerPrice;
-        int128 fLeverage; // 0 if deposit and trade separate
-        uint64 iDeadline;
-        uint64 createdTimestamp;
+        uint24 iPerpetualId; // unique id of the perpetual
+        int128 fLimitPrice; // order will not execute if realized price is above (buy) or below (sell) this price
+        uint16 leverageTDR; // leverage, set to 0 if deposit margin and trade separate; format: two-digit integer (e.g., 12.34 -> 1234)
+        uint32 executionTimestamp; // the order will not be executed before this timestamp, allows TWAP orders
+        uint32 flags; // Order-flags are specified in OrderFlags.sol
+        uint32 iDeadline; // order will not be executed after this deadline
+        address brokerAddr; // can be empty, address of the broker
+        int128 fTriggerPrice; // trigger price for stop-orders|0. Order can be executed if the mark price is below this price (sell order) or above (buy)
+        int128 fAmount; // signed amount of base-currency. Will be rounded to lot size
+        bytes32 parentChildDigest1; // see notice in LimitOrderBook.sol
+        address traderAddr; // address of the trader
+        bytes32 parentChildDigest2; // see notice in LimitOrderBook.sol
+        uint16 brokerFeeTbps; // broker fee in tenth of a basis point
+        bytes brokerSignature; // signature, can be empty if no brokerAddr provided
+        //address executorAddr; <- will be set by LimitOrderBook
         //uint64 submittedBlock <- will be set by LimitOrderBook
-        bytes32 parentChildDigest1;
-        bytes32 parentChildDigest2;
     }
 }
