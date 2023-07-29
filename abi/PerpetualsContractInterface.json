@@ -1,0 +1,232 @@
+[
+    {
+        "inputs": [
+            {
+                "internalType": "uint8",
+                "name": "_poolId",
+                "type": "uint8"
+            }
+        ],
+        "name": "getLiquidityPool",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "bool",
+                        "name": "isRunning",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "uint8",
+                        "name": "iPerpetualCount",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "uint8",
+                        "name": "id",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "int32",
+                        "name": "fCeilPnLShare",
+                        "type": "int32"
+                    },
+                    {
+                        "internalType": "uint8",
+                        "name": "marginTokenDecimals",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "uint16",
+                        "name": "iTargetPoolSizeUpdateTime",
+                        "type": "uint16"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "marginTokenAddress",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "prevAnchor",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "int128",
+                        "name": "fRedemptionRate",
+                        "type": "int128"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "shareTokenAddress",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "int128",
+                        "name": "fPnLparticipantsCashCC",
+                        "type": "int128"
+                    },
+                    {
+                        "internalType": "int128",
+                        "name": "fTargetAMMFundSize",
+                        "type": "int128"
+                    },
+                    {
+                        "internalType": "int128",
+                        "name": "fDefaultFundCashCC",
+                        "type": "int128"
+                    },
+                    {
+                        "internalType": "int128",
+                        "name": "fTargetDFSize",
+                        "type": "int128"
+                    },
+                    {
+                        "internalType": "int128",
+                        "name": "fBrokerCollateralLotSize",
+                        "type": "int128"
+                    },
+                    {
+                        "internalType": "uint128",
+                        "name": "prevTokenAmount",
+                        "type": "uint128"
+                    },
+                    {
+                        "internalType": "uint128",
+                        "name": "nextTokenAmount",
+                        "type": "uint128"
+                    },
+                    {
+                        "internalType": "uint128",
+                        "name": "totalSupplyShareToken",
+                        "type": "uint128"
+                    },
+                    {
+                        "internalType": "int128",
+                        "name": "fBrokerFundCashCC",
+                        "type": "int128"
+                    }
+                ],
+                "internalType": "struct ILiquidityPoolData.LiquidityPoolData",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint24",
+                "name": "_perpetualId",
+                "type": "uint24"
+            },
+            {
+                "internalType": "address",
+                "name": "_traderAddress",
+                "type": "address"
+            }
+        ],
+        "name": "getMarginAccount",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "int128",
+                        "name": "fLockedInValueQC",
+                        "type": "int128"
+                    },
+                    {
+                        "internalType": "int128",
+                        "name": "fCashCC",
+                        "type": "int128"
+                    },
+                    {
+                        "internalType": "int128",
+                        "name": "fPositionBC",
+                        "type": "int128"
+                    },
+                    {
+                        "internalType": "int128",
+                        "name": "fUnitAccumulatedFundingStart",
+                        "type": "int128"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "iLastOpenTimestamp",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint16",
+                        "name": "feeTbps",
+                        "type": "uint16"
+                    },
+                    {
+                        "internalType": "uint16",
+                        "name": "brokerFeeTbps",
+                        "type": "uint16"
+                    },
+                    {
+                        "internalType": "bytes16",
+                        "name": "positionId",
+                        "type": "bytes16"
+                    }
+                ],
+                "internalType": "struct MarginAccount",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint24",
+                "name": "_perpetualId",
+                "type": "uint24"
+            },
+            {
+                "internalType": "int128",
+                "name": "_fCurrentTraderPos",
+                "type": "int128"
+            },
+            {
+                "internalType": "bool",
+                "name": "_isBuy",
+                "type": "bool"
+            }
+        ],
+        "name": "getMaxSignedOpenTradeSizeForPos",
+        "outputs": [
+            {
+                "internalType": "int128",
+                "name": "",
+                "type": "int128"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint24",
+                "name": "_perpetualId",
+                "type": "uint24"
+            }
+        ],
+        "name": "getOrderBookAddress",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    }
+]

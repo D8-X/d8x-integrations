@@ -1,0 +1,341 @@
+[
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_perpetualProxy",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint24",
+                "name": "perpetualId",
+                "type": "uint24"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "to",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amountDecN",
+                "type": "uint256"
+            }
+        ],
+        "name": "MarginTokenSent",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "previousOwner",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "newOwner",
+                "type": "address"
+            }
+        ],
+        "name": "OwnershipTransferred",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "uint24",
+                "name": "perpetualId",
+                "type": "uint24"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "lobAddr",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "mgnTknAddrOfPool",
+                "type": "address"
+            }
+        ],
+        "name": "PerpetualAdded",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "reason",
+                "type": "string"
+            }
+        ],
+        "name": "PerpetualOrderSubmitFailed",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "int256",
+                "name": "amountDec18",
+                "type": "int256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint16",
+                "name": "leverageTDR",
+                "type": "uint16"
+            }
+        ],
+        "name": "PerpetualOrderSubmitSuccess",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint24",
+                "name": "_iPerpetualId",
+                "type": "uint24"
+            }
+        ],
+        "name": "addPerpetual",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_amount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint24",
+                "name": "_iPerpetualId",
+                "type": "uint24"
+            }
+        ],
+        "name": "approveAmountForPerpetualMgnTkn",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint24",
+                "name": "_iPerpetualId",
+                "type": "uint24"
+            }
+        ],
+        "name": "getMarginAccount",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "int256",
+                        "name": "lockedInValueQCD18",
+                        "type": "int256"
+                    },
+                    {
+                        "internalType": "int256",
+                        "name": "cashCCD18",
+                        "type": "int256"
+                    },
+                    {
+                        "internalType": "int256",
+                        "name": "positionSizeBCD18",
+                        "type": "int256"
+                    },
+                    {
+                        "internalType": "bytes16",
+                        "name": "positionId",
+                        "type": "bytes16"
+                    }
+                ],
+                "internalType": "struct D18MarginAccount",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint24",
+                "name": "_iPerpetualId",
+                "type": "uint24"
+            },
+            {
+                "internalType": "bool",
+                "name": "isBuy",
+                "type": "bool"
+            }
+        ],
+        "name": "getMaxTradeAmount",
+        "outputs": [
+            {
+                "internalType": "int256",
+                "name": "",
+                "type": "int256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint8",
+                "name": "",
+                "type": "uint8"
+            }
+        ],
+        "name": "mgnTknAddrOfPool",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint24",
+                "name": "",
+                "type": "uint24"
+            }
+        ],
+        "name": "orderBookOfPerpetual",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "owner",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "perpetualProxy",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint24",
+                "name": "_iPerpetualId",
+                "type": "uint24"
+            },
+            {
+                "internalType": "int256",
+                "name": "_amountDec18",
+                "type": "int256"
+            },
+            {
+                "internalType": "uint16",
+                "name": "_leverageTDR",
+                "type": "uint16"
+            },
+            {
+                "internalType": "uint32",
+                "name": "_flags",
+                "type": "uint32"
+            }
+        ],
+        "name": "postOrder",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "renounceOwnership",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint24",
+                "name": "_iPerpetualId",
+                "type": "uint24"
+            }
+        ],
+        "name": "transferMarginCollateralTo",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "newOwner",
+                "type": "address"
+            }
+        ],
+        "name": "transferOwnership",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]

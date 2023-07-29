@@ -1,51 +1,44 @@
 # D8XIntegrations
 
-> Can we have the have some sample solidity calls for opening/closing trades and reading the size of our positions? 🙏🙏🙏
-https://discord.gg/JdJ8EXqCVE 
+> The D8X community requested solidity calls for opening/closing trades and reading the size of the positions
 
-Yes you can.
+## OnChainTrader
 
+We therefore built "OnChainTrader". The contract `OnChainTrader.sol` provides an example for trading D8X perpetual futures from another contract.
+The deployment scripts rely on [node SDK](https://d8x.gitbook.io/d8x/node-sdk/getting-started) the most up to date SDK contains the most up-to date contract
+addresses.
 
-## MockLego
+## Deployment
 
-The contract `MockLego.sol` provides an example on how D8X perpetual futures trades and checking position sizes
-can be performed from another smart contract.
+See [here](scripts/deployment/Deployment.md)
 
-## Opening/Closing Trades
-* Ensure the margin-token can be spent by the Perpetual Proxy, see the smart contract function `approveAmount`
-* Ensure the calling contract also has enough of the margin token
-* Open/close a position using `postOrder(tradeSizeInSignedDec18Format, leverageInteger)`
-  - Enter a long position by supplying a positive `tradeSizeInSignedDec18Format`
-  - Enter a short position by supplying a negative `tradeSizeInSignedDec18Format`
-  - close the position by posting an order sized equal to the position size but opposite sign        
-* Reading the size of your position
+## Trading From The Contract
+
+The script will set the data for all current perpetual ids using D8X node SDK.
+Before trading,
+
+- spending has to be approved via function `approveAmountForPerpetualMgnTkn` from the deployer address, which can be done via block-explorer.
+- the relevant margin-tokens have to be sent to the contract. The contract has the margin token address stored after running the deployment script,
+  and hence the address can be read for example via block-explorer (Read Contract > mgnTknAddrOfPool, enter pool id (first digit before the 00 of the perpetual
+  id or get the pool id from the output of the deployment script, or SDK).
+- now an order can be posted. On the block-explorer, navigate to 'write contract' > 'post order', enter the perpetual id you choose to trade in,
+  the amount in the perpetual base currency (e.g. 1 for a contract amount of 1 ETH in a ETH-USD perpetual) multiplied by 10^18 (enter the number
+  in quotation marks on the block-explorer, e.g., "500000000000000000000" for 500),
+  enter the leverage multiplied by 100 (500 for 5x), you can set the flags to 0 for a market order
+- If the contract emits an event whether the order was submitted succesfully to the order book or not. If the submission is successful,
+  the execution also has to be succesful, which you can observe on the order book contract.
+- After trading, check your margin account. For example, navigate on the block-explorer to "read contract" > "getMarginAccount" and
+  enter the perpetual id that you traded. The function returns data in the following format:
   ```
-  let acc = await mockLego.getMarginAccount();
-  let posDec18 = acc.positionSizeBCD18;
+  struct D18MarginAccount {
+    int256 lockedInValueQCD18; // unrealized value locked-in when trade occurs: notional amount * price in decimal 18 format
+    int256 cashCCD18; // cash in collateral currency (base, quote, or quanto) in decimal 18 format
+    int256 positionSizeBCD18; // position in base currency (e.g., 1 BTC for BTCUSD) in decimal 18 format
+    bytes16 positionId; // unique id for the position (for given trader, and perpetual). Current position, zero otherwise.
+    }
   ```
-        
-* Note that orders are not executed in the same block. Orders can however be executed by anyone when supplying offchain-oracle price data, see https://app.gitbook.com/o/84M6G9Tny4Cxv7BY10If/s/sivfyCjOhJUkKrxqsPg4/d8x-in-a-nutshell/d8x-introduction/referrers
+- to close a position, trade the opposite size (e.g., "-500000000000000000000")
 
-### Constructor Variables
-You can get the parameters used in the constructor of `MockLego.sol` with the help of 
-* install packages: `yarn` 
-* run: `ts-node src/scripts/contractAddresses.ts`
+# Node SDK
 
-Example output of contractAddresses:
-
-```
-D8X Perpetual Proxy Address 0xDEDf0dd46757cE93E0D9439F78382c0c68cF76C2
-Pool 1: MATIC, margin token address: 0x215975839684a365df2387b1f0FcEaBf4F0B77eb
-        perpetual id 100000 : MATIC-USD-MATIC with order book @ 0xAE7bA6903e7B6DDf68b2b3B08A4b92c1e325EC87
-        perpetual id 100001 : ETH-USD-MATIC with order book @ 0xC2faeaec27F4e1b456e3670c0fE5dCd639f1A6E4
-        perpetual id 100002 : BTC-USD-MATIC with order book @ 0x7dAd5016c06d56929EC260682091443D1A025fA6
-Pool 2: USDC, margin token address: 0xeB4E22B2AD4D9d07C25A32f57d85a4F41ca6b8FF
-        perpetual id 200000 : MATIC-USDC-USDC with order book @ 0x55Ff74E202e7332b9217F09c6da2a08bd5577EBB
-        perpetual id 200001 : ETH-USDC-USDC with order book @ 0xF9d88b2530c8A76c95778b594Ec7C5ea96903b03
-        perpetual id 200002 : BTC-USDC-USDC with order book @ 0xf30b1F2BC443DaAD1925D781C145d70FFC2f2784
-        perpetual id 200003 : CHF-USDC-USDC with order book @ 0x15677A9458878224e362d81f581C58225e1d4899
-        perpetual id 200004 : GBP-USDC-USDC with order book @ 0x01230C38BFB3Daf3eFf7300974f666b41846A938
-        perpetual id 200005 : XAU-USDC-USDC with order book @ 0xE02E39B7f4aF82966D481bB084458aE9334a9EcE
-```
-
-Get help on the Node SDK used in `contractAddresses.ts` from https://d8x.gitbook.io/d8x/node-sdk/getting-started
+Get help on the Node SDK used in `contractAddresses.ts` and the deployment scripts [here](https://d8x.gitbook.io/d8x/node-sdk/getting-started).

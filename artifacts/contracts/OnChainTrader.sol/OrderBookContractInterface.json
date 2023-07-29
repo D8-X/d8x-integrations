@@ -1,0 +1,101 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "OrderBookContractInterface",
+  "sourceName": "contracts/OnChainTrader.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint24",
+              "name": "iPerpetualId",
+              "type": "uint24"
+            },
+            {
+              "internalType": "int128",
+              "name": "fLimitPrice",
+              "type": "int128"
+            },
+            {
+              "internalType": "uint16",
+              "name": "leverageTDR",
+              "type": "uint16"
+            },
+            {
+              "internalType": "uint32",
+              "name": "executionTimestamp",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "flags",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint32",
+              "name": "iDeadline",
+              "type": "uint32"
+            },
+            {
+              "internalType": "address",
+              "name": "brokerAddr",
+              "type": "address"
+            },
+            {
+              "internalType": "int128",
+              "name": "fTriggerPrice",
+              "type": "int128"
+            },
+            {
+              "internalType": "int128",
+              "name": "fAmount",
+              "type": "int128"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "parentChildDigest1",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "address",
+              "name": "traderAddr",
+              "type": "address"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "parentChildDigest2",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint16",
+              "name": "brokerFeeTbps",
+              "type": "uint16"
+            },
+            {
+              "internalType": "bytes",
+              "name": "brokerSignature",
+              "type": "bytes"
+            }
+          ],
+          "internalType": "struct IClientOrder.ClientOrder",
+          "name": "_order",
+          "type": "tuple"
+        },
+        {
+          "internalType": "bytes",
+          "name": "_signature",
+          "type": "bytes"
+        }
+      ],
+      "name": "postOrder",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
