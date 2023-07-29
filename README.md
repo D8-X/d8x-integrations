@@ -1,6 +1,6 @@
 # D8XIntegrations
 
-> The D8X community requested solidity calls for opening/closing trades and reading the size of the positions
+> The D8X community requested solidity calls for opening/closing trades and reading the size of the positions from another contract
 
 ## OnChainTrader
 
