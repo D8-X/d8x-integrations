@@ -1,0 +1,20 @@
+[
+    {
+        "inputs": [
+            {
+                "internalType": "bytes32",
+                "name": "orderDigest",
+                "type": "bytes32"
+            },
+            {
+                "internalType": "bool",
+                "name": "isExecuted",
+                "type": "bool"
+            }
+        ],
+        "name": "d8xExecutionCallback",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]
