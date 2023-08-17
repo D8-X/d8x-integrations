@@ -26,8 +26,12 @@ Before trading,
   in quotation marks on the block-explorer, e.g., "500000000000000000000" for 500),
   enter the leverage multiplied by 100 (500 for 5x), you can set the flags to 0 for a market order
 - If the contract emits an event whether the order was submitted succesfully to the order book or not. If the submission is successful,
-  the execution also has to be succesful, which you can observe on the order book contract.
-- After trading, check your margin account. For example, navigate on the block-explorer to "read contract" > "getMarginAccount" and
+  the execution also has to be successful, which you can observe on the order book contract.
+    - for on-chain trading there is a callback function that is executed when the order was either successfully executed or the execution failed
+    - the callback function is implemented in an arbitrary contract that implements the interface `ID8XExecutionCallbackReceiver` and for which its
+      address is set in the order
+- After trading, check your margin account, or, alternatively the callback function can update the margin account. 
+    - For example, navigate on the block-explorer to "read contract" > "getMarginAccount" and
   enter the perpetual id that you traded. The function returns data in the following format:
   ```
   struct D18MarginAccount {
