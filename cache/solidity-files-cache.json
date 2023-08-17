@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/home/bnm/Documents/desma8/git/d8x-integrations/contracts/IClientOrder.sol": {
-      "lastModificationDate": 1690560286535,
-      "contentHash": "2e2c3430c047df05bcbf8fa9ebe07255",
+      "lastModificationDate": 1692284088613,
+      "contentHash": "6b26887dde4b9d82617e0a0f33fe99d0",
       "sourceName": "contracts/IClientOrder.sol",
       "solcConfig": {
         "version": "0.8.19",
@@ -40,12 +40,13 @@
         "0.8.19"
       ],
       "artifacts": [
-        "IClientOrder"
+        "IClientOrder",
+        "ID8XExecutionCallbackReceiver"
       ]
     },
     "/home/bnm/Documents/desma8/git/d8x-integrations/contracts/OnChainTrader.sol": {
-      "lastModificationDate": 1690560405240,
-      "contentHash": "70e3380b5e3a9d865a8a8933ce64e724",
+      "lastModificationDate": 1692285081883,
+      "contentHash": "5e69f641ce620c8b8b7e53c61395436d",
       "sourceName": "contracts/OnChainTrader.sol",
       "solcConfig": {
         "version": "0.8.19",

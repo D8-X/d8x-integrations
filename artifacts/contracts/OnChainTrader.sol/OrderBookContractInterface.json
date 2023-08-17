@@ -76,6 +76,11 @@
               "internalType": "bytes",
               "name": "brokerSignature",
               "type": "bytes"
+            },
+            {
+              "internalType": "address",
+              "name": "callbackTarget",
+              "type": "address"
             }
           ],
           "internalType": "struct IClientOrder.ClientOrder",

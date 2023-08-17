@@ -72,13 +72,15 @@ struct D18MarginAccount {
     bytes16 positionId; // unique id for the position (for given trader, and perpetual). Current position, zero otherwise.
 }
 
-contract OnChainTrader is Ownable {
+contract OnChainTrader is Ownable, ID8XExecutionCallbackReceiver {
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
     event PerpetualOrderSubmitFailed(string reason);
     event PerpetualOrderSubmitSuccess(int256 amountDec18, uint16 leverageTDR);
     event PerpetualAdded(uint24 perpetualId, address lobAddr, address mgnTknAddrOfPool);
     event MarginTokenSent(uint24 perpetualId, address to, uint256 amountDecN);
+    event CallbackReceived(bytes32 orderDigest, bool isExecuted);
+
     address public immutable perpetualProxy;
     int256 private constant DECIMALS = 10**18;
     int128 private constant ONE_64x64 = 2**64;
@@ -162,7 +164,8 @@ contract OnChainTrader is Ownable {
         order.leverageTDR = _leverageTDR; // 0 if deposit and trade separate
         order.iDeadline = uint32(block.timestamp + 86400 * 3);
         order.executionTimestamp = uint32(block.timestamp);
-
+        // specify callback target
+        order.callbackTarget = address(this);
         // submit order
         try OrderBookContractInterface(orderBookAddr).postOrder(order, bytes("")) {
             emit PerpetualOrderSubmitSuccess(_amountDec18, _leverageTDR);
@@ -250,5 +253,16 @@ contract OnChainTrader is Ownable {
     function _fromInt(int256 x) internal pure returns (int128) {
         require(x >= -0x8000000000000000 && x <= 0x7FFFFFFFFFFFFFFF, "ABDK.fromInt");
         return int128(x << 64);
+    }
+
+    /**
+     * Callback function that will be called once the order is executed or cancelled
+     * @param orderDigest unique identifier for the order
+     * @param isExecuted true if order was succesfully executed
+     */
+    function d8xExecutionCallback(bytes32 orderDigest, bool isExecuted) external {
+        // msg.sender is the order-book contract, so we can upgrade the corresponding
+        // margin account
+        emit CallbackReceived(orderDigest, isExecuted);
     }
 }
