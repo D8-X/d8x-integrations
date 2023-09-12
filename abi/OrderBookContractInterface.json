@@ -79,17 +79,17 @@
                         "type": "address"
                     }
                 ],
-                "internalType": "struct IClientOrder.ClientOrder",
-                "name": "_order",
-                "type": "tuple"
+                "internalType": "struct IClientOrder.ClientOrder[]",
+                "name": "_orders",
+                "type": "tuple[]"
             },
             {
-                "internalType": "bytes",
-                "name": "_signature",
-                "type": "bytes"
+                "internalType": "bytes[]",
+                "name": "_signatures",
+                "type": "bytes[]"
             }
         ],
-        "name": "postOrder",
+        "name": "postOrders",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

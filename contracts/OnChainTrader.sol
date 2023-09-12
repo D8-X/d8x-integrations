@@ -24,7 +24,7 @@ import "./ILiquidityPoolData.sol";
 
 
 interface OrderBookContractInterface {
-    function postOrder(IClientOrder.ClientOrder calldata _order, bytes calldata _signature)
+    function postOrders(IClientOrder.ClientOrder[] calldata _orders, bytes[] calldata _signatures)
         external;
 }
 
@@ -155,19 +155,20 @@ contract OnChainTrader is Ownable, ID8XExecutionCallbackReceiver {
         if (_flags==0) {
              _flags = 0x40000000;//market order
         }
-        IClientOrder.ClientOrder memory order;
-        order.flags = _flags;
-        order.iPerpetualId = _iPerpetualId;
-        order.traderAddr = address(this);
-        order.fAmount = fTradeAmount;
-        order.fLimitPrice = fTradeAmount > 0 ? MAX_64x64 : int128(0);
-        order.leverageTDR = _leverageTDR; // 0 if deposit and trade separate
-        order.iDeadline = uint32(block.timestamp + 86400 * 3);
-        order.executionTimestamp = uint32(block.timestamp);
+        IClientOrder.ClientOrder[] memory order = new IClientOrder.ClientOrder[](1);
+        order[0].flags = _flags;
+        order[0].iPerpetualId = _iPerpetualId;
+        order[0].traderAddr = address(this);
+        order[0].fAmount = fTradeAmount;
+        order[0].fLimitPrice = fTradeAmount > 0 ? MAX_64x64 : int128(0);
+        order[0].leverageTDR = _leverageTDR; // 0 if deposit and trade separate
+        order[0].iDeadline = uint32(block.timestamp + 86400 * 3);
+        order[0].executionTimestamp = uint32(block.timestamp);
         // specify callback target
-        order.callbackTarget = address(this);
+        order[0].callbackTarget = address(this);
         // submit order
-        try OrderBookContractInterface(orderBookAddr).postOrder(order, bytes("")) {
+        bytes[] memory sig = new bytes[](1);
+        try OrderBookContractInterface(orderBookAddr).postOrders(order, sig) {
             emit PerpetualOrderSubmitSuccess(_amountDec18, _leverageTDR);
             return true;
         } catch Error(string memory reason) {
