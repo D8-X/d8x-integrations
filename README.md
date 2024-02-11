@@ -9,7 +9,7 @@ The deployment scripts rely on [node SDK](https://d8x.gitbook.io/d8x/node-sdk/ge
 addresses.
 
 Your smart contract can integrate into D8X Perpetuals similar to `OnChainTrader.sol`, most relevant features are:
-- the contract posts orders to the limit order book (the contract address is the trader, hence funds for collateral need to be at the contract address)
+- the contract posts orders to the order book (the contract address is the trader, hence funds for collateral need to be at the contract address)
 - callback function that is invoked after order execution. Keep the callback light because of gas costs (there is a maximal amount of gas for callbacks)
 - query margin account of the trader (=contract)
 
