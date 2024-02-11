@@ -8,14 +8,19 @@ We therefore built "OnChainTrader". The contract `OnChainTrader.sol` provides an
 The deployment scripts rely on [node SDK](https://d8x.gitbook.io/d8x/node-sdk/getting-started) the most up to date SDK contains the most up-to date contract
 addresses.
 
-## Deployment
+Your smart contract can integrate into D8X Perpetuals similar to `OnChainTrader.sol`, most relevant features are:
+- the contract posts orders to the limit order book (the contract address is the trader, hence funds for collateral need to be at the contract address)
+- callback function that is invoked after order execution. Keep the callback light because of gas costs (there is a maximal amount of gas for callbacks)
+- query margin account of the trader (=contract)
+
+## Deployment Of The "OnChainTrader" Example
 
 See [here](scripts/deployment/Deployment.md)
 
-## Trading From The Contract
+## Trading From The Example Contract
 
-The script will set the data for all current perpetual ids using D8X node SDK.
-Before trading,
+The deployment script sets the data for all current perpetual ids using D8X node SDK.
+Before the contract can start trading,
 
 - spending has to be approved via function `approveAmountForPerpetualMgnTkn` from the deployer address, which can be done via block-explorer.
 - the relevant margin-tokens have to be sent to the contract. The contract has the margin token address stored after running the deployment script,
@@ -46,3 +51,6 @@ Before trading,
 # Node SDK
 
 Get help on the Node SDK used in `contractAddresses.ts` and the deployment scripts [here](https://d8x.gitbook.io/d8x/node-sdk/getting-started).
+
+**Happy Integration!**
+
