@@ -1,8 +1,8 @@
 //ts-node
-import { MarketData, AccountTrade, PerpetualDataHandler, sleepForSec } from "@d8x/perpetuals-sdk";
+import { PerpetualDataHandler, sleepForSec } from "@d8x/perpetuals-sdk";
 import { ethers } from "hardhat";
 import { Contract, providers, Wallet } from "ethers";
-import { parseEther, parseUnits } from "@ethersproject/units";
+import { parseUnits } from "@ethersproject/units";
 
 const erc20Transfer = [
     {
@@ -30,7 +30,8 @@ const erc20Transfer = [
     },
 ];
 
-const TRADER_CONTRACT = "0x2BF2418cEEd5EF63DaA3b3EaF8Fe69A28271951A";
+const TRADER_CONTRACT = "0x..."; // your deployed trader contract
+
 const PK: string = <string>process.env.PK;
 
 //ts-node
@@ -51,9 +52,9 @@ async function main() {
     const honeyAddress = "0xFCBD14DC51f0A4d49d5E53C2E0950e0bC26d0Dce";
 
     // approve
-    // const txApprove = await trader.approveCompositeToken(amountHoney, perpetualId, honeyAddress);
-    // console.log("approve tx:", txApprove.hash);
-    // await txApprove.wait();
+    const txApprove = await trader.approveCompositeToken(amountHoney, perpetualId, honeyAddress);
+    console.log("approve tx:", txApprove.hash);
+    await txApprove.wait();
 
     // fund trader
     const honey = new Contract(honeyAddress, erc20Transfer, signer);
@@ -75,7 +76,7 @@ async function main() {
     console.log({ account });
 
     /**
-     * apprive tx 0x...
+     * approve tx 0x...
      * fund tx: 0x...
      * trade tx: 0x...
         {
