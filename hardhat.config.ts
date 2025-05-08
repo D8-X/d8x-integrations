@@ -176,20 +176,20 @@ export default {
             // gasPrice: 200000000,
             gas: 35_000_000,
         },
-         zkevm: {
+        zkevm: {
             url: RPC ?? "https://polygon-zkevm.drpc.org",
             chainId: 1101,
             accounts: [pk],
             timeout: 300_000,
             gas: 6_000_000,
             // gasPrice: 500_000_000
-          },
+        },
         arbitrumOne: {
             url: RPC ?? "https://arbitrum-one.publicnode.com",
             chainId: 42161,
             accounts: [pk],
             timeout: 300_000,
-            gasLimit: 30_000_000
+            gasLimit: 30_000_000,
         },
         X1: {
             url: RPC ?? "https://testrpc.x1.tech",
@@ -201,20 +201,25 @@ export default {
             url: RPC ?? "https://ethereum-sepolia.publicnode.com",
             chainId: 11155111,
             accounts: [pk],
-            gas: 6_000_000
+            gas: 6_000_000,
         },
         cardona: {
             url: RPC ?? "https://rpc.cardona.zkevm-rpc.com",
             chainId: 2442,
             accounts: [pk],
-            gas: 6_000_000
+            gas: 6_000_000,
         },
         arbitrumSepolia: {
             url: RPC ?? "https://sepolia-rollup.arbitrum.io/rpc",
             chainId: 421614,
             accounts: [pk],
-            gas: 20_000_000
-        }
+            gas: 20_000_000,
+        },
+        bera: {
+            url: RPC ?? "https://rpc.berachain.com/",
+            chainId: 80094,
+            accounts: [pk],
+        },
     },
     etherscan: {
         apiKey: etherscanapikey,

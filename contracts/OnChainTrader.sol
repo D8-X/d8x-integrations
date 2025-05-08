@@ -22,18 +22,18 @@ import "./ILiquidityPoolData.sol";
  * - Check positions using function getMarginAccount
  */
 
-
 interface OrderBookContractInterface {
-    function postOrders(IClientOrder.ClientOrder[] calldata _orders, bytes[] calldata _signatures)
-        external;
+    function postOrders(
+        IClientOrder.ClientOrder[] calldata _orders,
+        bytes[] calldata _signatures
+    ) external;
 }
 
 interface PerpetualsContractInterface {
-    
-    function getMarginAccount(uint24 _perpetualId, address _traderAddress)
-        external
-        view
-        returns (MarginAccount memory);
+    function getMarginAccount(
+        uint24 _perpetualId,
+        address _traderAddress
+    ) external view returns (MarginAccount memory);
 
     function getMaxSignedOpenTradeSizeForPos(
         uint24 _perpetualId,
@@ -42,10 +42,10 @@ interface PerpetualsContractInterface {
     ) external view returns (int128);
 
     function getOrderBookAddress(uint24 _perpetualId) external view returns (address);
-    function getLiquidityPool(uint8 _poolId)
-        external
-        view
-        returns (ILiquidityPoolData.LiquidityPoolData memory);
+
+    function getLiquidityPool(
+        uint8 _poolId
+    ) external view returns (ILiquidityPoolData.LiquidityPoolData memory);
 }
 
 /**
@@ -56,10 +56,6 @@ struct MarginAccount {
     int128 fCashCC; // cash in collateral currency (base, quote, or quanto)
     int128 fPositionBC; // position in base currency (e.g., 1 BTC for BTCUSD)
     int128 fUnitAccumulatedFundingStart; // accumulated funding rate
-    uint64 iLastOpenTimestamp; // timestamp in seconds when the position was last opened/increased
-    uint16 feeTbps; // exchange fee in tenth of a basis point
-    uint16 brokerFeeTbps; // broker fee in tenth of a basis point
-    bytes16 positionId; // unique id for the position (for given trader, and perpetual). Current position, zero otherwise.
 }
 
 /**
@@ -69,7 +65,6 @@ struct D18MarginAccount {
     int256 lockedInValueQCD18; // unrealized value locked-in when trade occurs: notional amount * price in decimal 18 format
     int256 cashCCD18; // cash in collateral currency (base, quote, or quanto) in decimal 18 format
     int256 positionSizeBCD18; // position in base currency (e.g., 1 BTC for BTCUSD) in decimal 18 format
-    bytes16 positionId; // unique id for the position (for given trader, and perpetual). Current position, zero otherwise.
 }
 
 contract OnChainTrader is Ownable, ID8XExecutionCallbackReceiver {
@@ -82,39 +77,40 @@ contract OnChainTrader is Ownable, ID8XExecutionCallbackReceiver {
     event CallbackReceived(bytes32 orderDigest, bool isExecuted);
 
     address public immutable perpetualProxy;
-    int256 private constant DECIMALS = 10**18;
-    int128 private constant ONE_64x64 = 2**64;
+    int256 private constant DECIMALS = 10 ** 18;
+    int128 private constant ONE_64x64 = 2 ** 64;
     int128 private constant MIN_64x64 = -0x80000000000000000000000000000000;
     int128 private constant MAX_64x64 = 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF;
     int128 private constant TEN_64x64 = 0xa0000000000000000;
 
-    mapping (uint24 => address) public orderBookOfPerpetual;//limit order book addr
-    
-    // each perpetual is in a pool. Perpetuals in a pool share the margin token
-    mapping (uint8 => address) public mgnTknAddrOfPool;
+    mapping(uint24 => address) public orderBookOfPerpetual; //limit order book addr
 
-    constructor(
-        address _perpetualProxy
-    ) Ownable() {
+    // each perpetual is in a pool. Perpetuals in a pool share the margin token
+    mapping(uint8 => address) public mgnTknAddrOfPool;
+
+    constructor(address _perpetualProxy) Ownable() {
         perpetualProxy = _perpetualProxy;
     }
 
     /**
      * Anyone add a perpetual. Needs to be set once per perpetual.
      * The function sets the order book address for an existing
-     * perpetual-id and ensures the margin token address is stored. 
+     * perpetual-id and ensures the margin token address is stored.
      * @param _iPerpetualId id of the perpetual to be traded
      */
     function addPerpetual(uint24 _iPerpetualId) external {
         // set order book address
-        address lobAddr = PerpetualsContractInterface(perpetualProxy).getOrderBookAddress(_iPerpetualId);
+        address lobAddr = PerpetualsContractInterface(perpetualProxy).getOrderBookAddress(
+            _iPerpetualId
+        );
         orderBookOfPerpetual[_iPerpetualId] = lobAddr;
         // register margin token
-        uint8 poolId = uint8(_iPerpetualId/100_000);
-        if(mgnTknAddrOfPool[poolId] == address(0)) {
+        uint8 poolId = uint8(_iPerpetualId / 100_000);
+        if (mgnTknAddrOfPool[poolId] == address(0)) {
             // set margin token address for pool
-            ILiquidityPoolData.LiquidityPoolData memory lp = 
-                PerpetualsContractInterface(perpetualProxy).getLiquidityPool(poolId);
+            ILiquidityPoolData.LiquidityPoolData memory lp = PerpetualsContractInterface(
+                perpetualProxy
+            ).getLiquidityPool(poolId);
             mgnTknAddrOfPool[poolId] = lp.marginTokenAddress;
         }
         emit PerpetualAdded(_iPerpetualId, lobAddr, mgnTknAddrOfPool[poolId]);
@@ -126,9 +122,9 @@ contract OnChainTrader is Ownable, ID8XExecutionCallbackReceiver {
      * @param _amount spend amount
      */
     function approveAmountForPerpetualMgnTkn(uint256 _amount, uint24 _iPerpetualId) external {
-        uint8 poolId = uint8(_iPerpetualId/100_000);
+        uint8 poolId = uint8(_iPerpetualId / 100_000);
         address mgnTkn = mgnTknAddrOfPool[poolId];
-        require(mgnTkn!=address(0), "set ob addrs");
+        require(mgnTkn != address(0), "set ob addrs");
         IERC20(mgnTkn).approve(perpetualProxy, _amount);
     }
 
@@ -148,12 +144,17 @@ contract OnChainTrader is Ownable, ID8XExecutionCallbackReceiver {
      * @param _flags order-flags, can be left 0 for a market order
      * @return true if posting order succeeded
      */
-    function postOrder(uint24 _iPerpetualId, int256 _amountDec18, uint16 _leverageTDR, uint32 _flags) onlyOwner external returns (bool) {
-         address orderBookAddr = orderBookOfPerpetual[_iPerpetualId];
-         require(orderBookAddr!=address(0), "order book unknown");
+    function postOrder(
+        uint24 _iPerpetualId,
+        int256 _amountDec18,
+        uint16 _leverageTDR,
+        uint32 _flags
+    ) external onlyOwner returns (bool) {
+        address orderBookAddr = orderBookOfPerpetual[_iPerpetualId];
+        require(orderBookAddr != address(0), "order book unknown");
         int128 fTradeAmount = _fromDec18(_amountDec18);
-        if (_flags==0) {
-             _flags = 0x40000000;//market order
+        if (_flags == 0) {
+            _flags = 0x40000000; //market order
         }
         IClientOrder.ClientOrder[] memory order = new IClientOrder.ClientOrder[](1);
         order[0].flags = _flags;
@@ -177,8 +178,8 @@ contract OnChainTrader is Ownable, ID8XExecutionCallbackReceiver {
         }
     }
 
-    function transferMarginCollateralTo(uint24 _iPerpetualId) onlyOwner external {
-        uint8 poolId = uint8(_iPerpetualId/100_000);
+    function transferMarginCollateralTo(uint24 _iPerpetualId) external onlyOwner {
+        uint8 poolId = uint8(_iPerpetualId / 100_000);
         address mgnTknAddr = mgnTknAddrOfPool[poolId];
         IERC20Upgradeable marginToken = IERC20Upgradeable(mgnTknAddr);
         uint256 balance = marginToken.balanceOf(address(this));
@@ -189,9 +190,11 @@ contract OnChainTrader is Ownable, ID8XExecutionCallbackReceiver {
 
     /**
      * Return margin account information in decimal 18 format
-     * @param _iPerpetualId id of perpetual 
+     * @param _iPerpetualId id of perpetual
      */
-    function getMarginAccount(uint24 _iPerpetualId) external view returns (D18MarginAccount memory) {
+    function getMarginAccount(
+        uint24 _iPerpetualId
+    ) external view returns (D18MarginAccount memory) {
         MarginAccount memory acc = PerpetualsContractInterface(perpetualProxy).getMarginAccount(
             _iPerpetualId,
             address(this)
@@ -200,7 +203,6 @@ contract OnChainTrader is Ownable, ID8XExecutionCallbackReceiver {
         accD18.lockedInValueQCD18 = toDec18(acc.fLockedInValueQC); // unrealized value locked-in when trade occmurs: price * position size
         accD18.cashCCD18 = toDec18(acc.fCashCC); // cash in collateral currency (base, quote, or quanto)
         accD18.positionSizeBCD18 = toDec18(acc.fPositionBC); // position in base currency (e.g., 1 BTC for BTCUSD)
-        accD18.positionId = acc.positionId; // unique id for the position (for given trader, and perpetual).
         return accD18;
     }
 

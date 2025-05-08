@@ -9,6 +9,7 @@ The deployment scripts rely on [node SDK](https://d8x.gitbook.io/d8x/node-sdk/ge
 addresses.
 
 Your smart contract can integrate into D8X Perpetuals similar to `OnChainTrader.sol`, most relevant features are:
+
 - the contract posts orders to the order book (the contract address is the trader, hence funds for collateral need to be at the contract address)
 - callback function that is invoked after order execution. Keep the callback light because of gas costs (there is a maximal amount of gas for callbacks)
 - query margin account of the trader (=contract)
@@ -24,20 +25,19 @@ Before the contract can start trading,
 
 - spending has to be approved via function `approveAmountForPerpetualMgnTkn` from the deployer address, which can be done via block-explorer.
 - the relevant margin-tokens have to be sent to the contract. The contract has the margin token address stored after running the deployment script,
-  and hence the address can be read for example via block-explorer (Read Contract > mgnTknAddrOfPool, enter pool id (first digit before the 00 of the perpetual
-  id or get the pool id from the output of the deployment script, or SDK).
+  and hence the address can be read for example via block-explorer: Read Contract > mgnTknAddrOfPool, enter pool id (first digit before the 00 of the perpetual id or get the pool id from the output of the deployment script, or SDK).
 - now an order can be posted. On the block-explorer, navigate to 'write contract' > 'post order', enter the perpetual id you choose to trade in,
   the amount in the perpetual base currency (e.g. 1 for a contract amount of 1 ETH in a ETH-USD perpetual) multiplied by 10^18 (enter the number
   in quotation marks on the block-explorer, e.g., "500000000000000000000" for 500),
   enter the leverage multiplied by 100 (500 for 5x), you can set the flags to 0 for a market order
 - If the contract emits an event whether the order was submitted succesfully to the order book or not. If the submission is successful,
   the execution also has to be successful, which you can observe on the order book contract.
-    - for on-chain trading there is a callback function that is executed when the order was either successfully executed or the execution failed
-    - the callback function is implemented in an arbitrary contract that implements the interface `ID8XExecutionCallbackReceiver` and for which its
-      address is set in the order
-- After trading, check your margin account, or, alternatively the callback function can update the margin account. 
-    - For example, navigate on the block-explorer to "read contract" > "getMarginAccount" and
-  enter the perpetual id that you traded. The function returns data in the following format:
+  - for on-chain trading there is a callback function that is executed when the order was either successfully executed or the execution failed
+  - the callback function is implemented in an arbitrary contract that implements the interface `ID8XExecutionCallbackReceiver` and for which its
+    address is set in the order
+- After trading, check your margin account, or, alternatively the callback function can update the margin account.
+  - For example, navigate on the block-explorer to "read contract" > "getMarginAccount" and
+    enter the perpetual id that you traded. The function returns data in the following format:
   ```
   struct D18MarginAccount {
     int256 lockedInValueQCD18; // unrealized value locked-in when trade occurs: notional amount * price in decimal 18 format
@@ -53,4 +53,3 @@ Before the contract can start trading,
 Get help on the Node SDK used in `contractAddresses.ts` and the deployment scripts [here](https://d8x.gitbook.io/d8x/node-sdk/getting-started).
 
 **Happy Integration!**
-
