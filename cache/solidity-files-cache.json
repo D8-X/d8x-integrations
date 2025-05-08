@@ -45,8 +45,8 @@
       ]
     },
     "/home/marco/D8X/d8x-integrations/contracts/OnChainTrader.sol": {
-      "lastModificationDate": 1694544445862,
-      "contentHash": "66e0f0cf61ef2b2eea58f41c3c163f98",
+      "lastModificationDate": 1746716838339,
+      "contentHash": "9c5161f45192fa8d7b67e3c2070cf65e",
       "sourceName": "contracts/OnChainTrader.sol",
       "solcConfig": {
         "version": "0.8.19",
@@ -90,14 +90,15 @@
         "0.8.19"
       ],
       "artifacts": [
+        "CompositeToken",
         "OnChainTrader",
         "OrderBookContractInterface",
         "PerpetualsContractInterface"
       ]
     },
     "/home/marco/D8X/d8x-integrations/contracts/ILiquidityPoolData.sol": {
-      "lastModificationDate": 1694543549833,
-      "contentHash": "0c3a12885440fda3755a03e0f24fd338",
+      "lastModificationDate": 1746714270841,
+      "contentHash": "73dba603ddc6cc9e85552801ce301b42",
       "sourceName": "contracts/ILiquidityPoolData.sol",
       "solcConfig": {
         "version": "0.8.19",

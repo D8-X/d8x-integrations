@@ -48,6 +48,12 @@ interface PerpetualsContractInterface {
     ) external view returns (ILiquidityPoolData.LiquidityPoolData memory);
 }
 
+interface CompositeToken {
+    function registeredToken(address _user) external view returns (address _token);
+
+    function registerAccount(address _token) external;
+}
+
 /**
  * @notice  D8X Perpetual Data structure to store user margin information.
  */
@@ -129,6 +135,31 @@ contract OnChainTrader is Ownable, ID8XExecutionCallbackReceiver {
     }
 
     /**
+     * Approve a registered token to be used in a composite token pool.
+     * @param _amount spend amount
+     * @param _iPerpetualId perpetual Id
+     * @param _spendToken Token to spend
+     */
+    function approveCompositeToken(
+        uint256 _amount,
+        uint24 _iPerpetualId,
+        address _spendToken
+    ) external {
+        uint8 poolId = uint8(_iPerpetualId / 100_000);
+        address compositeToken = mgnTknAddrOfPool[poolId];
+        require(compositeToken != address(0), "no composite");
+        require(_spendToken != address(0), "no token");
+        address registeredToken = CompositeToken(compositeToken).registeredToken(address(this));
+        if (registeredToken == address(0)) {
+            // not yet registered
+            CompositeToken(compositeToken).registerAccount(_spendToken);
+        } else {
+            require(registeredToken == _spendToken, "wrong token");
+        }
+        IERC20(_spendToken).approve(compositeToken, _amount);
+    }
+
+    /**
      * Post an order to the order book. Order will be executed by
      * external "executors".
      * * Available order flags:
@@ -178,6 +209,10 @@ contract OnChainTrader is Ownable, ID8XExecutionCallbackReceiver {
         }
     }
 
+    /**
+     * Withdraw margin token balance linked to a given perpetual Id
+     * @param _iPerpetualId Perpetual id
+     */
     function transferMarginCollateralTo(uint24 _iPerpetualId) external onlyOwner {
         uint8 poolId = uint8(_iPerpetualId / 100_000);
         address mgnTknAddr = mgnTknAddrOfPool[poolId];
@@ -186,6 +221,19 @@ contract OnChainTrader is Ownable, ID8XExecutionCallbackReceiver {
         // transfer the margin token to the user
         marginToken.safeTransfer(msg.sender, balance);
         emit MarginTokenSent(_iPerpetualId, msg.sender, balance);
+    }
+
+    /**
+     * Withdraw ERC20 tokens stored in this contract
+     * Required with trading in a pool with a composite token
+     * @param _tokenAddr Token address
+     */
+    function transferTokensTo(address _tokenAddr) external onlyOwner {
+        IERC20Upgradeable token = IERC20Upgradeable(_tokenAddr);
+        uint256 balance = token.balanceOf(address(this));
+        // transfer the margin token to the user
+        token.safeTransfer(msg.sender, balance);
+        emit MarginTokenSent(0, msg.sender, balance);
     }
 
     /**

@@ -151,26 +151,6 @@
                         "internalType": "int128",
                         "name": "fUnitAccumulatedFundingStart",
                         "type": "int128"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "iLastOpenTimestamp",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint16",
-                        "name": "feeTbps",
-                        "type": "uint16"
-                    },
-                    {
-                        "internalType": "uint16",
-                        "name": "brokerFeeTbps",
-                        "type": "uint16"
-                    },
-                    {
-                        "internalType": "bytes16",
-                        "name": "positionId",
-                        "type": "bytes16"
                     }
                 ],
                 "internalType": "struct MarginAccount",

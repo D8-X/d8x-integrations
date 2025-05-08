@@ -23,7 +23,9 @@ See [here](scripts/deployment/Deployment.md)
 The deployment script sets the data for all current perpetual ids using D8X node SDK.
 Before the contract can start trading,
 
-- spending has to be approved via function `approveAmountForPerpetualMgnTkn` from the deployer address, which can be done via block-explorer.
+- Spending has to be approved from the deployer address. This can be done via the block explorer using one of the following functions:
+  - `approveCompositeToken(uint256 _amount, address _compositeToken, address _spendToken)`: for pools that use a composite token (e.g. Berachain perps)
+  - `approveAmountForPerpetualMgnTkn(uint256 _amount, uint24 _iPerpetualId)`: for pools that do not use a composite token
 - the relevant margin-tokens have to be sent to the contract. The contract has the margin token address stored after running the deployment script,
   and hence the address can be read for example via block-explorer: Read Contract > mgnTknAddrOfPool, enter pool id (first digit before the 00 of the perpetual id or get the pool id from the output of the deployment script, or SDK).
 - now an order can be posted. On the block-explorer, navigate to 'write contract' > 'post order', enter the perpetual id you choose to trade in,
@@ -43,7 +45,6 @@ Before the contract can start trading,
     int256 lockedInValueQCD18; // unrealized value locked-in when trade occurs: notional amount * price in decimal 18 format
     int256 cashCCD18; // cash in collateral currency (base, quote, or quanto) in decimal 18 format
     int256 positionSizeBCD18; // position in base currency (e.g., 1 BTC for BTCUSD) in decimal 18 format
-    bytes16 positionId; // unique id for the position (for given trader, and perpetual). Current position, zero otherwise.
     }
   ```
 - to close a position, trade the opposite size (e.g., "-500000000000000000000")

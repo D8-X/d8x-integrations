@@ -164,6 +164,29 @@
     {
         "inputs": [
             {
+                "internalType": "uint256",
+                "name": "_amount",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint24",
+                "name": "_iPerpetualId",
+                "type": "uint24"
+            },
+            {
+                "internalType": "address",
+                "name": "_spendToken",
+                "type": "address"
+            }
+        ],
+        "name": "approveCompositeToken",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "bytes32",
                 "name": "orderDigest",
                 "type": "bytes32"
@@ -205,11 +228,6 @@
                         "internalType": "int256",
                         "name": "positionSizeBCD18",
                         "type": "int256"
-                    },
-                    {
-                        "internalType": "bytes16",
-                        "name": "positionId",
-                        "type": "bytes16"
                     }
                 ],
                 "internalType": "struct D18MarginAccount",
@@ -371,6 +389,19 @@
             }
         ],
         "name": "transferOwnership",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_tokenAddr",
+                "type": "address"
+            }
+        ],
+        "name": "transferTokensTo",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
